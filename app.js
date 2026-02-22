@@ -9,10 +9,32 @@ document.addEventListener('DOMContentLoaded', () => {
   const addButton = form.querySelector('button[type="submit"]');
   const inputError = document.getElementById('input-error');
   const filterBar = document.querySelector('.filters');
+  const themeToggle = document.getElementById('theme-toggle');
 
   let tasks = load();
   let filter = 'all';
+  const THEME_KEY = 'theme-v1';
   render();
+
+  // Initialize theme from storage or system preference
+  (function initTheme(){
+    const saved = localStorage.getItem(THEME_KEY);
+    const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+    const useLight = saved ? saved === 'light' : prefersLight;
+    if (useLight) {
+      document.documentElement.classList.add('light-theme');
+      if (themeToggle) {
+        themeToggle.setAttribute('aria-pressed','true');
+        themeToggle.textContent = 'Dark';
+      }
+    } else {
+      document.documentElement.classList.remove('light-theme');
+      if (themeToggle) {
+        themeToggle.setAttribute('aria-pressed','false');
+        themeToggle.textContent = 'Light';
+      }
+    }
+  })();
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -54,6 +76,22 @@ document.addEventListener('DOMContentLoaded', () => {
       filter = f || 'all';
       updateFilterUI();
       render();
+    });
+  }
+
+  // Theme toggle behavior (registered once)
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      const isLight = document.documentElement.classList.toggle('light-theme');
+      if (isLight) {
+        themeToggle.setAttribute('aria-pressed','true');
+        themeToggle.textContent = 'Dark';
+        localStorage.setItem(THEME_KEY, 'light');
+      } else {
+        themeToggle.setAttribute('aria-pressed','false');
+        themeToggle.textContent = 'Light';
+        localStorage.setItem(THEME_KEY, 'dark');
+      }
     });
   }
 
