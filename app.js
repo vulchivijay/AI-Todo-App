@@ -6,8 +6,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const list = document.getElementById('task-list');
   const template = document.getElementById('task-template');
   const status = document.getElementById('status');
+  const filterBar = document.querySelector('.filters');
 
   let tasks = load();
+  let filter = 'all';
   render();
 
   form.addEventListener('submit', (e) => {
@@ -21,6 +23,27 @@ document.addEventListener('DOMContentLoaded', () => {
     input.value = '';
     input.focus();
   });
+
+  // Filters
+  if (filterBar) {
+    filterBar.addEventListener('click', (e) => {
+      const btn = e.target.closest('.filter-btn');
+      if (!btn) return;
+      const f = btn.dataset.filter;
+      filter = f || 'all';
+      updateFilterUI();
+      render();
+    });
+  }
+
+  function updateFilterUI(){
+    const buttons = document.querySelectorAll('.filter-btn');
+    buttons.forEach(b => {
+      const isActive = b.dataset.filter === filter;
+      b.classList.toggle('active', isActive);
+      b.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    });
+  }
 
   // Delegate clicks for checkbox toggles and delete
   list.addEventListener('click', (e) => {
@@ -69,8 +92,23 @@ document.addEventListener('DOMContentLoaded', () => {
       status.textContent = 'No tasks yet. Add one above.';
       return;
     }
-    status.textContent = `${tasks.filter(t=>!t.completed).length} remaining • ${tasks.length} total`;
-    tasks.forEach(task => {
+
+    // apply filter
+    const filtered = tasks.filter(t => {
+      if (filter === 'active' || filter === 'pending') return !t.completed;
+      if (filter === 'completed') return t.completed;
+      return true;
+    });
+
+    if (filtered.length === 0){
+      const msg = filter === 'all' ? 'No tasks yet. Add one above.' : 'No tasks match this filter.';
+      status.textContent = `${tasks.filter(t=>!t.completed).length} remaining • ${tasks.length} total — ${msg}`;
+      return;
+    }
+
+    status.textContent = `${filtered.filter(t=>!t.completed).length} remaining • ${filtered.length} shown • ${tasks.length} total`;
+
+    filtered.forEach(task => {
       const node = template.content.firstElementChild.cloneNode(true);
       const li = node;
       li.dataset.id = task.id;
@@ -84,7 +122,6 @@ document.addEventListener('DOMContentLoaded', () => {
       label.textContent = task.text;
       if (task.completed) label.classList.add('completed'); else label.classList.remove('completed');
       del.setAttribute('aria-label', `Delete task: ${task.text}`);
-      // allow keyboard focus on li for toggle via Enter
       li.tabIndex = 0;
       list.appendChild(li);
     });

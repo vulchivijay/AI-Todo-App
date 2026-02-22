@@ -45,9 +45,16 @@ input[type="text"]{width:100%;padding:12px 14px;border-radius:10px;border:1px so
 .app-footer{margin-top:18px;color:var(--muted)}
 .visually-hidden{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap}
 
+/* Filter buttons */
+.filters{display:flex;gap:8px;margin-top:14px}
+.filter-btn{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);padding:8px 12px;border-radius:10px;cursor:pointer;font-weight:600}
+.filter-btn[aria-pressed="true"],.filter-btn.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:var(--bg);border-color:transparent}
+.filter-btn:hover{filter:brightness(1.05)}
+
 @media (max-width:560px){
   .container{margin:20px;padding:16px}
   .task-form{flex-direction:column}
   .btn-primary{width:100%}
   .task-item{padding:10px}
+  .filters{flex-wrap:wrap}
 }
