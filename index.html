@@ -16,9 +16,10 @@
     <form id="task-form" class="task-form" aria-labelledby="form-label">
       <div class="field">
         <label id="form-label" for="task-input">New task</label>
-        <input id="task-input" name="task" type="text" inputmode="text" autocomplete="off" placeholder="What needs doing?" required>
+        <input id="task-input" name="task" type="text" inputmode="text" autocomplete="off" placeholder="What needs doing?" required aria-describedby="input-error">
+        <div id="input-error" class="input-error" aria-live="assertive"></div>
       </div>
-      <button type="submit" class="btn-primary">Add</button>
+      <button type="submit" class="btn-primary" disabled>Add</button>
     </form>
 
     <div class="filters" role="toolbar" aria-label="Filter tasks">

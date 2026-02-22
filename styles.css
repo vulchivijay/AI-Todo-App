@@ -51,6 +51,10 @@ input[type="text"]{width:100%;padding:12px 14px;border-radius:10px;border:1px so
 .filter-btn[aria-pressed="true"],.filter-btn.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:var(--bg);border-color:transparent}
 .filter-btn:hover{filter:brightness(1.05)}
 
+/* Input validation error */
+.input-error{color:var(--danger);font-size:0.9rem;margin-top:6px;display:none}
+.input-error.active{display:block}
+
 @media (max-width:560px){
   .container{margin:20px;padding:16px}
   .task-form{flex-direction:column}

@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const list = document.getElementById('task-list');
   const template = document.getElementById('task-template');
   const status = document.getElementById('status');
+  const addButton = form.querySelector('button[type="submit"]');
+  const inputError = document.getElementById('input-error');
   const filterBar = document.querySelector('.filters');
 
   let tasks = load();
@@ -15,13 +17,32 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const text = input.value.trim();
-    if (!text) return;
+    if (!text) {
+      // show accessible error and keep focus on input
+      if (inputError) {
+        inputError.textContent = 'Please enter a task.';
+        inputError.classList.add('active');
+      }
+      if (addButton) addButton.disabled = true;
+      input.focus();
+      return;
+    }
     const task = { id: Date.now().toString(36) + Math.random().toString(36).slice(2,6), text, completed:false };
     tasks.unshift(task);
     save();
     render();
     input.value = '';
     input.focus();
+  });
+
+  // Input event: enable/disable submit and clear errors
+  input.addEventListener('input', () => {
+    const trimmed = input.value.trim();
+    if (inputError && inputError.classList.contains('active')) {
+      inputError.textContent = '';
+      inputError.classList.remove('active');
+    }
+    if (addButton) addButton.disabled = trimmed.length === 0;
   });
 
   // Filters
